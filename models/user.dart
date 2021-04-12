@@ -6,7 +6,6 @@ class User {
   final String password;
   final String role;
   final String displayed_name;
-  final List<ObjectId> list_posts;
 
-  User(this.user_id, this.username, this.password, this.role, this.displayed_name, this.list_posts);
+  User(this.user_id, this.username, this.password, this.role, this.displayed_name);
 }
