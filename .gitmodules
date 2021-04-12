@@ -1,0 +1,3 @@
+[submodule "blogger-sever"]
+	path = blogger-sever
+	url = https://github.com/namhihi237/blogger-sever.git
