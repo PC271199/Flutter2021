@@ -1,13 +1,9 @@
 import 'dart:convert';
 
 import 'package:blog/screens/login/login_page.dart';
-import 'package:blog/screens/create/create_page.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
-import 'package:blog/services/postCURD.dart';
-
-String url = 'https://ancient-cliffs-67475.herokuapp.com/api/v1/posts';
 
 class Home extends StatefulWidget {
   @override
@@ -15,10 +11,24 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<dynamic> posts = [];
+  List<Map<String, dynamic>> posts = [
+    {"title":'Title',
+    "content":'This is blog content\nThis is blog content\nThis is blog content\nThis is blog content',
+    "like":"10",
+    "comments":[
+      {"user":"User A","comment":"This is a comment"},
+      {"user":"User B","comment":"This is an another comment"},
+      {"user":"User C","comment":"This is again an another comment"}]},
+    {"title":'Title',
+    "content":'This is blog content\nThis is blog content\nThis is blog contentt\nThis is blog content',
+    "like":"10",
+    "comments":[
+      {"user":"User A","comment":"This is a comment"},
+      {"user":"User B","comment":"This is an another comment"},
+      {"user":"User C","comment":"This is again an another comment"}]}  
+    
+  ];
   final PublishSubject subject = PublishSubject<String>();
-
-  CrudMethods crudMethods = new CrudMethods();
 
   @override
   void dispose() {
@@ -56,10 +66,7 @@ class _HomeState extends State<Home> {
                   // ignore: deprecated_member_use
                   child: FlatButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateBlog()));
+                        getPosts();
                       },
                       child: Text("Create posts"))),
               Padding(
@@ -94,31 +101,81 @@ class _HomeState extends State<Home> {
                   width: 400,
                   alignment: Alignment.center,
                   child: Padding(
-                      padding: EdgeInsets.only(left: 100, right: 100),
+                      padding: EdgeInsets.only(left: 100, right: 100,top:10,bottom:20),
                       child: Card(
                           child: ExpansionTile(
                               title: ListTile(
-                                  subtitle: Text(posts[index]["title"],
+                                  title:  Text(posts[index]["title"],
                                       style: TextStyle(
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold))),
+                              backgroundColor: Colors.black54,
+                              collapsedBackgroundColor: Colors.black45,
                               children: [
-                            Padding(
-                                padding: EdgeInsets.all(12),
-                                child: Text(posts[index]["content"])),
-                          ]))));
+                                Container(
+                                  padding: EdgeInsets.only(top: 10, bottom: 10,left:20),
+                                  child: Row( 
+                                    children: <Widget>[
+                                      Text(posts[index]["content"],
+                                        style: TextStyle(
+                                            fontSize: 20),)])),
+                                Container(
+                                  color: Colors.black38,
+                                  child:
+                                    Row(                                  
+                                    children: <Widget>[
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        child:  Icon(
+                                            Icons.favorite,
+                                            color: Colors.pink)
+                                      ),
+                                      Text(posts[index]["like"])
+                                    ]) 
+                                ),
+                                Container(
+                                  child:ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: posts[index]["comments"].length,
+                                    itemBuilder: (context, int i) {
+                                      return Row(                                  
+                                        children: <Widget>[
+                                          Container(
+                                            padding: EdgeInsets.all(10),
+                                            child:
+                                              Text(posts[index]["comments"][i]["user"],
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold))),                                          
+                                          Text(posts[index]["comments"][i]["comment"])
+                                        ]) ;
+                                    })
+                                )
+                              ]))));
             }));
   }
 
-  void getPosts() async {
+//posts[index]["post_body"] posts[index]["post_header"]
+  String url = 'http://localhost/posts';
+  Future<void> getPosts() async {
     try {
-      var result = await crudMethods.getPosts();
-      var postData = result["posts"];
-      setState(() {
-        posts = postData;
-      });
-    } catch (e) {
-      // print(e);
-    }
+      print('get post');
+      print('don1');
+      var response = await http
+          .get(Uri.tryParse(url), headers: {"Accept": "application/json"});
+      var p = jsonDecode(response.body);
+      p.forEach(addPost);
+    } catch (e) {}
+  }
+
+  void addPost(item) {
+    setState(() {
+      posts.add(item);
+    });
+  }
+
+  void login() {
+    print("sdjhsjdhs");
   }
 }
