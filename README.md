@@ -17,4 +17,4 @@ samples, guidance on mobile development, and a full API reference.
 
 # update server
 
--   git submodule update
+-   `git submodule foreach git pull origin main`
