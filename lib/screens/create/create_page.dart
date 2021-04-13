@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:blog/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:blog/services/postCURD.dart';
 
@@ -18,14 +19,11 @@ class _CreateBlogState extends State<CreateBlog> {
   CrudMethods crudMethods = new CrudMethods();
 
   uploadBlog() async {
-      Map<String, String> blogMap = {
-        "title": title,
-        "content": content
-      };
-      crudMethods.createPost(blogMap).then((result) {
-        Navigator.pop(context);
-      });
-    
+    Map<String, String> blogMap = {"title": title, "content": content};
+    crudMethods.createPost(blogMap).then((result) {
+      // Navigator.pop(context);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+    });
   }
 
   @override

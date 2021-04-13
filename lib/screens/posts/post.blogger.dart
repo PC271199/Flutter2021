@@ -1,18 +1,17 @@
+import 'dart:convert';
+
 import 'package:blog/screens/login/login_page.dart';
 import 'package:blog/screens/create/create_page.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:blog/services/postCURD.dart';
-import 'package:blog/screens/posts/post.blogger.dart';
 
-
-
-class Home extends StatefulWidget {
+class PostManage extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<PostManage> {
   List<dynamic> posts = [];
   final PublishSubject subject = PublishSubject<String>();
 
@@ -80,51 +79,47 @@ class _HomeState extends State<Home> {
                     title: Text("My blog"),
                     backgroundColor: Colors.pink),
                 body: Column(children: <Widget>[
-                  TextButton(
-                          onPressed: () { Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PostManage())); },
-                          child: ListTile(title: Text("Manage posts") )),
-                  TextButton(
-                          onPressed: () { },
-                          child: ListTile(title: Text("Manage users") )),
-                  TextButton(
-                          onPressed: () { },
-                          child: ListTile(title: Text("Log out") )),
+                  ListTile(title: Text("Dashboard")),
+                  ListTile(title: Text("Manage users")),
+                  ListTile(title: Text("Manage posts")),
+                  ListTile(title: Text("Log out")),
                 ]))),
         body: ListView.builder(
             itemCount: posts.length,
             itemBuilder: (context, int index) {
               return Container(
-                  width: 400,
-                  alignment: Alignment.center,
-                  child: Padding(
-                      padding: EdgeInsets.only(left: 100, right: 100),
-                      child: Card(
-                          child: ExpansionTile(
-                              title: ListTile(
-                                  subtitle: Text(posts[index]["title"],
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold))),
-                              children: [
-                            Padding(
-                                padding: EdgeInsets.all(12),
-                                child: Text(posts[index]["content"])),
-                          ]))));
+                child: Table(
+                  children: [
+                    TableRow(children: [
+                      TableCell(
+                          child: Center(child: Text(posts[index]["_id"]))),
+                      TableCell(
+                          child: Center(child: Text(posts[index]["title"]))),
+                      TableCell(
+                          child: Center(
+                              child: TextButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.blue),
+                        ),
+                        onPressed: () {},
+                        child: Text('TextButton'),
+                      )))
+                    ])
+                  ],
+                ),
+              );
             }));
   }
 
   void getPosts() async {
     try {
-      var result = await crudMethods.getPosts();
+      var result = await crudMethods.getBloggerPosts();
       var postData = result["posts"];
       setState(() {
         posts = postData;
       });
-    } catch (e) {
-      // print(e);
-    }
+      print(posts);
+    } catch (e) {}
   }
 }
