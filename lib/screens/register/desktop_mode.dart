@@ -16,7 +16,7 @@ class _DesktopModeState extends State<DesktopMode> {
         color: Color.fromRGBO(224, 245, 255, 1),
         child: Center(
             child: Container(
-                height: heightSize * 0.9,
+                height: heightSize * 1,
                 width: widthSize * 0.7,
                 child: Card(
                     elevation: 5,
