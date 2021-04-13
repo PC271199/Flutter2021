@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:blog/screens/login/login_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterForm extends StatelessWidget {
@@ -88,7 +89,7 @@ class RegisterForm extends StatelessWidget {
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       color: Colors.white, fontSize: fontSizeTextFormField)),
-              SizedBox(height: heightSize * spaceBetweenFields),
+              SizedBox(height: heightSize * spaceBetweenFieldAndButton),
               Align(
                   alignment: Alignment.centerLeft,
                   child: Text('Password',
@@ -182,6 +183,7 @@ class RegisterForm extends StatelessWidget {
                       EdgeInsets.fromLTRB(widthButton, 15, widthButton, 15),
                   color: Colors.white,
                   onPressed: () async {
+                    if (_formKey.currentState.validate()) {}
                     var response = await http.post(Uri.tryParse(apiUrl),
                         headers: {"Content-Type": "application/json"},
                         body: jsonEncode({
@@ -191,7 +193,14 @@ class RegisterForm extends StatelessWidget {
                           "role": role
                         }));
                     var data = jsonDecode(response.body);
-
+                    Fluttertoast.showToast(
+                        msg: data["msg"],
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 2,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
                     if (data["status"] == 200) {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => LoginPage()));
