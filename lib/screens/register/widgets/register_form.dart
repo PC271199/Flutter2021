@@ -1,17 +1,15 @@
 import 'dart:convert';
 
-import 'package:blog/screens/register/register_page.dart';
-import 'package:blog/utils/headerData.dart';
+import 'package:blog/screens/login/login_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../../home.dart';
-
-class LoginForm extends StatelessWidget {
+class RegisterForm extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _fullNameController = TextEditingController();
   final paddingTopForm,
       fontSizeTextField,
       fontSizeTextFormField,
@@ -24,7 +22,7 @@ class LoginForm extends StatelessWidget {
       fontSizeSnackBar,
       errorFormMessage;
 
-  LoginForm(
+  RegisterForm(
       this.paddingTopForm,
       this.fontSizeTextField,
       this.fontSizeTextFormField,
@@ -41,15 +39,17 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final double widthSize = MediaQuery.of(context).size.width;
     final double heightSize = MediaQuery.of(context).size.height;
+    int role = 1;
+    Map<String, int> listRole = {"Viewer": 1, "Blogger": 2};
+    List<String> listRoleName = ["Viewer", "Blogger"];
+
     final String apiUrl =
-        'https://ancient-cliffs-67475.herokuapp.com/api/v1/auth/login';
+        'https://ancient-cliffs-67475.herokuapp.com/api/v1/auth/register';
     return Form(
         key: _formKey,
         child: Padding(
             padding: EdgeInsets.only(
-                left: widthSize * 0.05,
-                right: widthSize * 0.05,
-                top: heightSize * paddingTopForm),
+                left: widthSize * 0.05, right: widthSize * 0.05, top: 0),
             child: Column(children: <Widget>[
               Align(
                   alignment: Alignment.centerLeft,
@@ -128,6 +128,53 @@ class LoginForm extends StatelessWidget {
                   style: TextStyle(
                       color: Colors.white, fontSize: fontSizeTextFormField)),
               SizedBox(height: heightSize * spaceBetweenFieldAndButton),
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Full Name',
+                      style: TextStyle(
+                          fontSize: widthSize * fontSizeTextField,
+                          fontFamily: 'Poppins',
+                          color: Colors.white))),
+              TextFormField(
+                  controller: _fullNameController,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter full name!';
+                    }
+                  },
+                  cursorColor: Colors.white,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red, width: 2)),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 2)),
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 2)),
+                    labelStyle: TextStyle(color: Colors.white),
+                    errorStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: widthSize * errorFormMessage),
+                    prefixIcon: Icon(
+                      Icons.person,
+                      size: widthSize * iconFormSize,
+                      color: Colors.white,
+                    ),
+                  ),
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                      color: Colors.white, fontSize: fontSizeTextFormField)),
+              SizedBox(height: heightSize * spaceBetweenFieldAndButton),
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Role',
+                      style: TextStyle(
+                          fontSize: widthSize * fontSizeTextField,
+                          fontFamily: 'Poppins',
+                          color: Colors.white))),
+              DropDownList(),
+              SizedBox(height: heightSize * spaceBetweenFieldAndButton),
               FlatButton(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5)),
@@ -135,37 +182,54 @@ class LoginForm extends StatelessWidget {
                       EdgeInsets.fromLTRB(widthButton, 15, widthButton, 15),
                   color: Colors.white,
                   onPressed: () async {
-                    // if (_formKey.currentState.validate()) {}
                     var response = await http.post(Uri.tryParse(apiUrl),
                         headers: {"Content-Type": "application/json"},
                         body: jsonEncode({
                           "email": _emailController.text,
-                          "password": _passwordController.text
+                          "password": _passwordController.text,
+                          "fullName": _fullNameController.text,
+                          "role": role
                         }));
                     var data = jsonDecode(response.body);
+
                     if (data["status"] == 200) {
-                      HeaderData.setToken(data["token"]);
-                      HeaderData.setRole(5);
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Home()));
+                          MaterialPageRoute(builder: (context) => LoginPage()));
                     }
                   },
-                  child: Text('LOGIN',
+                  child: Text('REGISTER',
                       style: TextStyle(
                           fontSize: widthSize * fontSizeButton,
                           fontFamily: 'Poppins',
                           color: Color.fromRGBO(41, 187, 255, 1)))),
               SizedBox(height: heightSize * 0.01),
-              InkWell(
-                  child: new Text("Regiter"),
-                  onTap: () => {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RegisterPage()))
-                      })
             ])));
   }
+}
 
-  void launch(url) {}
+class DropDownList extends StatefulWidget {
+  @override
+  _DropDownListState createState() => _DropDownListState();
+}
+
+class _DropDownListState extends State<DropDownList> {
+  int role = 1;
+  Map<String, int> listRole = {"Viewer": 1, "Blogger": 2};
+  List<String> listRoleName = ["Viewer", "Blogger"];
+  @override
+  Widget build(BuildContext context) {
+    return new DropdownButton(
+        value: listRoleName[role - 1],
+        items: listRoleName.map((String value) {
+          return new DropdownMenuItem<String>(
+            value: value,
+            child: new Text(value),
+          );
+        }).toList(),
+        onChanged: (String newValue) => {
+              setState(() {
+                role = listRole[newValue];
+              })
+            });
+  }
 }
