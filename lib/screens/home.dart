@@ -1,9 +1,13 @@
 import 'dart:convert';
 
 import 'package:blog/screens/login/login_page.dart';
+import 'package:blog/screens/create/create_page.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
+import 'package:blog/services/postCURD.dart';
+
+String url = 'https://ancient-cliffs-67475.herokuapp.com/api/v1/posts';
 
 class Home extends StatefulWidget {
   @override
@@ -11,8 +15,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<Map<String, dynamic>> posts = [];
+  List<dynamic> posts = [];
   final PublishSubject subject = PublishSubject<String>();
+
+  CrudMethods crudMethods = new CrudMethods();
 
   @override
   void dispose() {
@@ -50,7 +56,10 @@ class _HomeState extends State<Home> {
                   // ignore: deprecated_member_use
                   child: FlatButton(
                       onPressed: () {
-                        getPosts();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CreateBlog()));
                       },
                       child: Text("Create posts"))),
               Padding(
@@ -89,40 +98,27 @@ class _HomeState extends State<Home> {
                       child: Card(
                           child: ExpansionTile(
                               title: ListTile(
-                                  title:
-                                      Image.network(posts[index]["post_url"]),
-                                  subtitle: Text('xss',
+                                  subtitle: Text(posts[index]["title"],
                                       style: TextStyle(
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold))),
                               children: [
                             Padding(
                                 padding: EdgeInsets.all(12),
-                                child: Text('ahihi')),
+                                child: Text(posts[index]["content"])),
                           ]))));
             }));
   }
 
-//posts[index]["post_body"] posts[index]["post_header"]
-  String url = 'http://localhost/posts';
-  Future<void> getPosts() async {
+  void getPosts() async {
     try {
-      print('get post');
-      print('don1');
-      var response = await http
-          .get(Uri.tryParse(url), headers: {"Accept": "application/json"});
-      var p = jsonDecode(response.body);
-      p.forEach(addPost);
-    } catch (e) {}
-  }
-
-  void addPost(item) {
-    setState(() {
-      posts.add(item);
-    });
-  }
-
-  void login() {
-    print("sdjhsjdhs");
+      var result = await crudMethods.getPosts();
+      var postData = result["posts"];
+      setState(() {
+        posts = postData;
+      });
+    } catch (e) {
+      // print(e);
+    }
   }
 }
