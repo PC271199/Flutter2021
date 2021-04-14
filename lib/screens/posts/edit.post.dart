@@ -4,24 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:blog/services/postCURD.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-// import 'package:image_picker/image_picker.dart';
-
-class CreateBlog extends StatefulWidget {
+// ignore: must_be_immutable
+class EditPost extends StatefulWidget {
+  String postId;
   @override
-  _CreateBlogState createState() => _CreateBlogState();
+  EditPost(this.postId);
+  _EditPostState createState() => _EditPostState(this.postId);
 }
 
-class _CreateBlogState extends State<CreateBlog> {
-  String authorName, title, content;
+class _EditPostState extends State<EditPost> {
+  String authorName, title, content, postId;
+  dynamic post = {};
+  _EditPostState(this.postId);
 
   File selectedImage;
   bool _isLoading = false;
 
   CrudMethods crudMethods = new CrudMethods();
 
-  uploadBlog() async {
+  @override
+  void initState() {
+    super.initState();
+    getPost();
+  }
+
+  upadtePost() async {
     Map<String, String> blogMap = {"title": title, "content": content};
-    var result = await crudMethods.createPost(blogMap);
+    var result = await crudMethods.updatePost(postId, blogMap);
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
     Fluttertoast.showToast(
@@ -56,7 +65,7 @@ class _CreateBlogState extends State<CreateBlog> {
         actions: <Widget>[
           GestureDetector(
             onTap: () {
-              uploadBlog();
+              upadtePost();
             },
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),
@@ -111,6 +120,7 @@ class _CreateBlogState extends State<CreateBlog> {
                       children: <Widget>[
                         TextField(
                           decoration: InputDecoration(hintText: "Title"),
+                          
                           onChanged: (val) {
                             title = val;
                           },
@@ -119,7 +129,8 @@ class _CreateBlogState extends State<CreateBlog> {
                           minLines: 6,
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
-                          decoration: InputDecoration(hintText: "Content"),
+                          initialValue: post["content"],
+                          // decoration: InputDecoration(hintText: "Content"),
                           onChanged: (val) {
                             content = val;
                           },
@@ -131,5 +142,16 @@ class _CreateBlogState extends State<CreateBlog> {
               ),
             ),
     );
+  }
+
+  void getPost() async {
+    try {
+      var result = await crudMethods.getPost(postId);
+      var postData = result["post"];
+      setState(() {
+        post = postData;
+      });
+      print(post);
+    } catch (e) {}
   }
 }
