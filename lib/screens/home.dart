@@ -105,8 +105,13 @@ class _HomeState extends State<Home> {
                               title: ListTile(
                                   title:  Text(posts[index]["title"],
                                       style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold))),
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold)),
+                                  subtitle:  Text(posts[index]["nameAuthor"],
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white54,
+                                          fontStyle: FontStyle.italic))),
                               backgroundColor: Colors.black54,
                               collapsedBackgroundColor: Colors.black45,
                               children: [
@@ -114,9 +119,10 @@ class _HomeState extends State<Home> {
                                   padding: EdgeInsets.only(top: 10, bottom: 10,left:20),
                                   child: Row( 
                                     children: <Widget>[
-                                      Text(posts[index]["content"],
+                                      Flexible(
+                                        child:Text(posts[index]["content"],
                                         style: TextStyle(
-                                            fontSize: 20),)])),
+                                            fontSize: 20),))])),
                                 Container(
                                   color: Colors.black38,
                                   child:
