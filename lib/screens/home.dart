@@ -1,13 +1,9 @@
-import 'dart:convert';
-
 import 'package:blog/screens/login/login_page.dart';
 import 'package:blog/screens/create/create_page.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:http/http.dart' as http;
 import 'package:blog/services/postCURD.dart';
-
-String url = 'https://ancient-cliffs-67475.herokuapp.com/api/v1/posts';
+import 'package:blog/screens/posts/post.blogger.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -15,22 +11,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<Map<String, dynamic>> posts = [
-    {"title":'Title',
-    "content":'This is blog content\nThis is blog content\nThis is blog content\nThis is blog content',
-    "like":"10",
-    "comments":[
-      {"user":"User A","comment":"This is a comment"},
-      {"user":"User B","comment":"This is an another comment"},
-      {"user":"User C","comment":"This is again an another comment"}]},
-    {"title":'Title',
-    "content":'This is blog content\nThis is blog content\nThis is blog contentt\nThis is blog content',
-    "like":"10",
-    "comments":[
-      {"user":"User A","comment":"This is a comment"},
-      {"user":"User B","comment":"This is an another comment"},
-      {"user":"User C","comment":"This is again an another comment"}]}  
-    
+  List<dynamic> posts = [
   ];
   final PublishSubject subject = PublishSubject<String>();
 
@@ -98,10 +79,18 @@ class _HomeState extends State<Home> {
                     title: Text("My blog"),
                     backgroundColor: Colors.pink),
                 body: Column(children: <Widget>[
-                  ListTile(title: Text("Dashboard")),
-                  ListTile(title: Text("Manage users")),
-                  ListTile(title: Text("Manage posts")),
-                  ListTile(title: Text("Log out")),
+                  TextButton(
+                          onPressed: () { Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PostManage())); },
+                          child: ListTile(title: Text("Manage posts") )),
+                  TextButton(
+                          onPressed: () { },
+                          child: ListTile(title: Text("Manage users") )),
+                  TextButton(
+                          onPressed: () { },
+                          child: ListTile(title: Text("Log out") )),
                 ]))),
         body: ListView.builder(
             itemCount: posts.length,
@@ -139,14 +128,14 @@ class _HomeState extends State<Home> {
                                             Icons.favorite,
                                             color: Colors.pink)
                                       ),
-                                      Text(posts[index]["like"])
+                                      Text(posts[index]["like"].toString())
                                     ]) 
                                 ),
                                 Container(
                                   child:ListView.builder(
                                     scrollDirection: Axis.vertical,
                                     shrinkWrap: true,
-                                    itemCount: posts[index]["comments"].length,
+                                    itemCount: posts[index]["comment"].length,
                                     itemBuilder: (context, int i) {
                                       return Row(                                  
                                         children: <Widget>[
@@ -157,7 +146,7 @@ class _HomeState extends State<Home> {
                                                 style: TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold))),                                          
-                                          Text(posts[index]["comments"][i]["comment"])
+                                          Text(posts[index]["comment"][i]["comment"])
                                         ]) ;
                                     })
                                 )
@@ -173,7 +162,6 @@ class _HomeState extends State<Home> {
           posts = postData;
         });
       } catch (e) {
-        // print(e);
       }
   }
 }
