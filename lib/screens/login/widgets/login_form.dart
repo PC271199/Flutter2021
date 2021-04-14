@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:blog/screens/register/register_page.dart';
+import 'package:blog/utils/alert.dart';
 import 'package:blog/utils/headerData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import '../../home.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginForm extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -135,7 +136,7 @@ class LoginForm extends StatelessWidget {
                       EdgeInsets.fromLTRB(widthButton, 15, widthButton, 15),
                   color: Colors.white,
                   onPressed: () async {
-                    // if (_formKey.currentState.validate()) {}
+                    if (_formKey.currentState.validate()) {}
                     var response = await http.post(Uri.tryParse(apiUrl),
                         headers: {"Content-Type": "application/json"},
                         body: jsonEncode({
@@ -143,6 +144,14 @@ class LoginForm extends StatelessWidget {
                           "password": _passwordController.text
                         }));
                     var data = jsonDecode(response.body);
+                    Fluttertoast.showToast(
+                        msg: data["msg"],
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 2,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
                     if (data["status"] == 200) {
                       HeaderData.setToken(data["token"]);
                       HeaderData.setRole(5);

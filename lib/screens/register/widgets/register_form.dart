@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:blog/screens/login/login_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterForm extends StatelessWidget {
@@ -10,6 +11,7 @@ class RegisterForm extends StatelessWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _fullNameController = TextEditingController();
+  int role = 1;
   final paddingTopForm,
       fontSizeTextField,
       fontSizeTextFormField,
@@ -39,10 +41,9 @@ class RegisterForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final double widthSize = MediaQuery.of(context).size.width;
     final double heightSize = MediaQuery.of(context).size.height;
-    int role = 1;
     Map<String, int> listRole = {"Viewer": 1, "Blogger": 2};
     List<String> listRoleName = ["Viewer", "Blogger"];
-
+    DropDownList dr = new DropDownList(this);
     final String apiUrl =
         'https://ancient-cliffs-67475.herokuapp.com/api/v1/auth/register';
     return Form(
@@ -88,7 +89,7 @@ class RegisterForm extends StatelessWidget {
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       color: Colors.white, fontSize: fontSizeTextFormField)),
-              SizedBox(height: heightSize * spaceBetweenFields),
+              SizedBox(height: heightSize * spaceBetweenFieldAndButton),
               Align(
                   alignment: Alignment.centerLeft,
                   child: Text('Password',
@@ -173,7 +174,7 @@ class RegisterForm extends StatelessWidget {
                           fontSize: widthSize * fontSizeTextField,
                           fontFamily: 'Poppins',
                           color: Colors.white))),
-              DropDownList(),
+              dr,
               SizedBox(height: heightSize * spaceBetweenFieldAndButton),
               FlatButton(
                   shape: RoundedRectangleBorder(
@@ -182,16 +183,26 @@ class RegisterForm extends StatelessWidget {
                       EdgeInsets.fromLTRB(widthButton, 15, widthButton, 15),
                   color: Colors.white,
                   onPressed: () async {
+                    print("sdjshdjshd");
+                    print(this.role);
+                    if (_formKey.currentState.validate()) {}
                     var response = await http.post(Uri.tryParse(apiUrl),
                         headers: {"Content-Type": "application/json"},
                         body: jsonEncode({
                           "email": _emailController.text,
                           "password": _passwordController.text,
                           "fullName": _fullNameController.text,
-                          "role": role
+                          "role": this.role
                         }));
                     var data = jsonDecode(response.body);
-
+                    Fluttertoast.showToast(
+                        msg: data["msg"],
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 2,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
                     if (data["status"] == 200) {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => LoginPage()));
@@ -208,18 +219,26 @@ class RegisterForm extends StatelessWidget {
 }
 
 class DropDownList extends StatefulWidget {
+  RegisterForm rg;
+  DropDownList(RegisterForm rg) {
+    this.rg = rg;
+  }
   @override
-  _DropDownListState createState() => _DropDownListState();
+  _DropDownListState createState() => _DropDownListState(rg);
 }
 
 class _DropDownListState extends State<DropDownList> {
-  int role = 1;
+  RegisterForm rg;
   Map<String, int> listRole = {"Viewer": 1, "Blogger": 2};
   List<String> listRoleName = ["Viewer", "Blogger"];
+  _DropDownListState(RegisterForm rg) {
+    this.rg = rg;
+  }
+
   @override
   Widget build(BuildContext context) {
     return new DropdownButton(
-        value: listRoleName[role - 1],
+        value: listRoleName[this.rg.role - 1],
         items: listRoleName.map((String value) {
           return new DropdownMenuItem<String>(
             value: value,
@@ -228,7 +247,7 @@ class _DropDownListState extends State<DropDownList> {
         }).toList(),
         onChanged: (String newValue) => {
               setState(() {
-                role = listRole[newValue];
+                this.rg.role = listRole[newValue];
               })
             });
   }
