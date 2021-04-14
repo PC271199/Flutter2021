@@ -18,10 +18,10 @@ class CrudMethods {
     }
   }
 
-  Future<dynamic> updatePost(blogData) async {
+  Future<dynamic> updatePost(postId,blogData) async {
     try {
       var token = await HeaderData.getToken();
-      var response = await http.patch(Uri.tryParse(url),
+      var response = await http.patch(Uri.tryParse("$url/$postId"),
           body: blogData, headers: {"Accept": "application/json" ,'Authorization': 'Bearer $token'});
       var result = jsonDecode(response.body);
       return result;
@@ -46,6 +46,15 @@ class CrudMethods {
     try {
       var response = await http
           .get(Uri.tryParse(url), headers: {"Accept": "application/json" ,} );
+      var result = jsonDecode(response.body);
+      return result;
+    } catch (e) {}
+  }
+
+  Future<dynamic> getPost(postId) async {
+    try {
+      var response = await http
+          .get(Uri.tryParse('$url/$postId'), headers: {"Accept": "application/json" ,} );
       var result = jsonDecode(response.body);
       return result;
     } catch (e) {}

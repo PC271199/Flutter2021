@@ -119,7 +119,7 @@ class _HomeState extends State<PostManage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EditPost()));
+                                builder: (context) => EditPost(posts[index]["_id"])));
                         },
                         child: Text('Edit'),
                       )))

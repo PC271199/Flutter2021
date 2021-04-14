@@ -11,8 +11,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<dynamic> posts = [
-  ];
+  List<dynamic> posts = [];
   final PublishSubject subject = PublishSubject<String>();
 
   CrudMethods crudMethods = new CrudMethods();
@@ -80,17 +79,19 @@ class _HomeState extends State<Home> {
                     backgroundColor: Colors.pink),
                 body: Column(children: <Widget>[
                   TextButton(
-                          onPressed: () { Navigator.push(
+                      onPressed: () {
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => PostManage())); },
-                          child: ListTile(title: Text("Manage posts") )),
+                                builder: (context) => PostManage()));
+                      },
+                      child: ListTile(title: Text("Manage posts"))),
                   TextButton(
-                          onPressed: () { },
-                          child: ListTile(title: Text("Manage users") )),
+                      onPressed: () {},
+                      child: ListTile(title: Text("Manage users"))),
                   TextButton(
-                          onPressed: () { },
-                          child: ListTile(title: Text("Log out") )),
+                      onPressed: () {},
+                      child: ListTile(title: Text("Log out"))),
                 ]))),
         body: ListView.builder(
             itemCount: posts.length,
@@ -99,69 +100,73 @@ class _HomeState extends State<Home> {
                   width: 400,
                   alignment: Alignment.center,
                   child: Padding(
-                      padding: EdgeInsets.only(left: 100, right: 100,top:10,bottom:20),
+                      padding: EdgeInsets.only(
+                          left: 100, right: 100, top: 10, bottom: 20),
                       child: Card(
                           child: ExpansionTile(
                               title: ListTile(
-                                  title:  Text(posts[index]["title"],
+                                  title: Text(posts[index]["title"],
                                       style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold))),
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold)),
+                                  subtitle: Text(posts[index]["nameAuthor"],
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white54,
+                                          fontStyle: FontStyle.italic))),
                               backgroundColor: Colors.black54,
                               collapsedBackgroundColor: Colors.black45,
                               children: [
-                                Container(
-                                  padding: EdgeInsets.only(top: 10, bottom: 10,left:20),
-                                  child: Row( 
-                                    children: <Widget>[
-                                      Text(posts[index]["content"],
-                                        style: TextStyle(
-                                            fontSize: 20),)])),
-                                Container(
-                                  color: Colors.black38,
-                                  child:
-                                    Row(                                  
-                                    children: <Widget>[
-                                      Container(
-                                        padding: EdgeInsets.all(10),
-                                        child:  Icon(
-                                            Icons.favorite,
-                                            color: Colors.pink)
-                                      ),
-                                      Text(posts[index]["like"].toString())
-                                    ]) 
-                                ),
-                                Container(
-                                  child:ListView.builder(
+                            Container(
+                                padding: EdgeInsets.only(
+                                    top: 10, bottom: 10, left: 20),
+                                child: Row(children: <Widget>[
+                                  Flexible(
+                                      child: Text(
+                                    posts[index]["content"],
+                                    style: TextStyle(fontSize: 20),
+                                  ))
+                                ])),
+                            Container(
+                                color: Colors.black38,
+                                child: Row(children: <Widget>[
+                                  Container(
+                                      padding: EdgeInsets.all(10),
+                                      child: Icon(Icons.favorite,
+                                          color: Colors.pink)),
+                                  Text(posts[index]["like"].toString())
+                                ])),
+                            Container(
+                                child: ListView.builder(
                                     scrollDirection: Axis.vertical,
                                     shrinkWrap: true,
                                     itemCount: posts[index]["comment"].length,
                                     itemBuilder: (context, int i) {
-                                      return Row(                                  
-                                        children: <Widget>[
-                                          Container(
+                                      return Row(children: <Widget>[
+                                        Container(
                                             padding: EdgeInsets.all(10),
-                                            child:
-                                              Text(posts[index]["comments"][i]["user"],
+                                            child: Text(
+                                                posts[index]["comments"][i]
+                                                    ["user"],
                                                 style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold))),                                          
-                                          Text(posts[index]["comment"][i]["comment"])
-                                        ]) ;
-                                    })
-                                )
-                              ]))));
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.bold))),
+                                        Text(posts[index]["comment"][i]
+                                            ["comment"])
+                                      ]);
+                                    }))
+                          ]))));
             }));
   }
 
   void getPosts() async {
-      try {
-        var result = await crudMethods.getPosts();
-        var postData = result["posts"];
-        setState(() {
-          posts = postData;
-        });
-      } catch (e) {
-      }
+    try {
+      var result = await crudMethods.getPosts();
+      var postData = result["posts"];
+      setState(() {
+        posts = postData;
+      });
+    } catch (e) {}
   }
 }
