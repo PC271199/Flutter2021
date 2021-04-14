@@ -5,15 +5,14 @@ import 'package:rxdart/rxdart.dart';
 import 'package:blog/services/postCURD.dart';
 import 'package:blog/screens/posts/post.blogger.dart';
 
-
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  List<dynamic> posts = [];
+  List<dynamic> posts = [
+  ];
   final PublishSubject subject = PublishSubject<String>();
 
   CrudMethods crudMethods = new CrudMethods();
@@ -100,31 +99,69 @@ class _HomeState extends State<Home> {
                   width: 400,
                   alignment: Alignment.center,
                   child: Padding(
-                      padding: EdgeInsets.only(left: 100, right: 100),
+                      padding: EdgeInsets.only(left: 100, right: 100,top:10,bottom:20),
                       child: Card(
                           child: ExpansionTile(
                               title: ListTile(
-                                  subtitle: Text(posts[index]["title"],
+                                  title:  Text(posts[index]["title"],
                                       style: TextStyle(
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold))),
+                              backgroundColor: Colors.black54,
+                              collapsedBackgroundColor: Colors.black45,
                               children: [
-                            Padding(
-                                padding: EdgeInsets.all(12),
-                                child: Text(posts[index]["content"])),
-                          ]))));
+                                Container(
+                                  padding: EdgeInsets.only(top: 10, bottom: 10,left:20),
+                                  child: Row( 
+                                    children: <Widget>[
+                                      Text(posts[index]["content"],
+                                        style: TextStyle(
+                                            fontSize: 20),)])),
+                                Container(
+                                  color: Colors.black38,
+                                  child:
+                                    Row(                                  
+                                    children: <Widget>[
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        child:  Icon(
+                                            Icons.favorite,
+                                            color: Colors.pink)
+                                      ),
+                                      Text(posts[index]["like"].toString())
+                                    ]) 
+                                ),
+                                Container(
+                                  child:ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: posts[index]["comment"].length,
+                                    itemBuilder: (context, int i) {
+                                      return Row(                                  
+                                        children: <Widget>[
+                                          Container(
+                                            padding: EdgeInsets.all(10),
+                                            child:
+                                              Text(posts[index]["comments"][i]["user"],
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold))),                                          
+                                          Text(posts[index]["comment"][i]["comment"])
+                                        ]) ;
+                                    })
+                                )
+                              ]))));
             }));
   }
 
   void getPosts() async {
-    try {
-      var result = await crudMethods.getPosts();
-      var postData = result["posts"];
-      setState(() {
-        posts = postData;
-      });
-    } catch (e) {
-      // print(e);
-    }
+      try {
+        var result = await crudMethods.getPosts();
+        var postData = result["posts"];
+        setState(() {
+          posts = postData;
+        });
+      } catch (e) {
+      }
   }
 }

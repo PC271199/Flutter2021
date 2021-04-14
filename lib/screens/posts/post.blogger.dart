@@ -102,10 +102,22 @@ class _HomeState extends State<PostManage> {
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.blue),
                         ),
+                        onPressed: () {
+                          deletePost(posts[index]["_id"]);
+                        },
+                        child: Text('Delete'),
+                      ))),
+                      TableCell(
+                          child: Center(
+                              child: TextButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.blue),
+                        ),
                         onPressed: () {},
-                        child: Text('TextButton'),
+                        child: Text('Edit'),
                       )))
-                    ])
+                    ]),
                   ],
                 ),
               );
@@ -121,5 +133,18 @@ class _HomeState extends State<PostManage> {
       });
       print(posts);
     } catch (e) {}
+  }
+
+  void deletePost(postId) async {
+    try {
+      var result = await crudMethods.deletePost(postId);
+      Navigator.pushReplacement(
+        context,
+        // rerender page
+        MaterialPageRoute(
+            builder: (BuildContext context) => super.widget));
+    } catch (e) {
+      print(e);
+    }
   }
 }
