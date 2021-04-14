@@ -6,13 +6,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 // import 'package:image_picker/image_picker.dart';
 
-class CreateBlog extends StatefulWidget {
+class EditPost extends StatefulWidget {
+  String postId;
   @override
-  _CreateBlogState createState() => _CreateBlogState();
+  _EditPostState createState() => _EditPostState(postId);
 }
 
-class _CreateBlogState extends State<CreateBlog> {
-  String authorName, title, content;
+class _EditPostState extends State<EditPost> {
+  String authorName, title, content, postId;
+  _EditPostState(this.postId);
 
   File selectedImage;
   bool _isLoading = false;

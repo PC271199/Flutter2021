@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:blog/screens/login/login_page.dart';
 import 'package:blog/screens/create/create_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:blog/services/postCURD.dart';
-
+import 'package:blog/screens/posts/edit.post.dart';
 class PostManage extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -114,7 +115,12 @@ class _HomeState extends State<PostManage> {
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.blue),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditPost()));
+                        },
                         child: Text('Edit'),
                       )))
                     ]),
@@ -139,12 +145,20 @@ class _HomeState extends State<PostManage> {
     try {
       var result = await crudMethods.deletePost(postId);
       Navigator.pushReplacement(
-        context,
-        // rerender page
-        MaterialPageRoute(
-            builder: (BuildContext context) => super.widget));
+          context,
+          // rerender page
+          MaterialPageRoute(builder: (BuildContext context) => super.widget));
+      Fluttertoast.showToast(
+          msg: result["msg"],
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
     } catch (e) {
       print(e);
     }
   }
+
 }
