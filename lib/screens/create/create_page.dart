@@ -22,7 +22,7 @@ class _CreateBlogState extends State<CreateBlog> {
     Map<String, String> blogMap = {"title": title, "content": content};
     crudMethods.createPost(blogMap).then((result) {
       // Navigator.pop(context);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+      Navigator.pop(context);
     });
   }
 
