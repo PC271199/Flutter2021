@@ -144,6 +144,7 @@ class LoginForm extends StatelessWidget {
                           "password": _passwordController.text
                         }));
                     var data = jsonDecode(response.body);
+                    print(data);
                     Fluttertoast.showToast(
                         msg: data["msg"],
                         toastLength: Toast.LENGTH_SHORT,
@@ -153,10 +154,10 @@ class LoginForm extends StatelessWidget {
                         textColor: Colors.white,
                         fontSize: 16.0);
                     if (data["status"] == 200) {
-                      HeaderData.setToken(data["token"]);
-                      HeaderData.setRole(5);
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Home()));
+                      await HeaderData.setToken(data["token"]);
+                      await HeaderData.setRole(data["role"]);
+                      print(await HeaderData.getToken());
+                      Navigator.pop(context);
                     }
                   },
                   child: Text('LOGIN',
@@ -167,12 +168,7 @@ class LoginForm extends StatelessWidget {
               SizedBox(height: heightSize * 0.01),
               InkWell(
                   child: new Text("Regiter"),
-                  onTap: () => {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RegisterPage()))
-                      })
+                  onTap: () => {Navigator.pushNamed(context, "/register")})
             ])));
   }
 

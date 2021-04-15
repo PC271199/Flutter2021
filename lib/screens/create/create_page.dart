@@ -21,6 +21,10 @@ class _CreateBlogState extends State<CreateBlog> {
 
   uploadBlog() async {
     Map<String, String> blogMap = {"title": title, "content": content};
+    crudMethods.createPost(blogMap).then((result) {
+      // Navigator.pop(context);
+      Navigator.pop(context);
+    });
     var result = await crudMethods.createPost(blogMap);
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
