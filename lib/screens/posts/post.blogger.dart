@@ -1,11 +1,16 @@
 import 'dart:convert';
 
+import 'package:blog/main.dart';
+import 'package:blog/screens/MyDrawer.dart';
 import 'package:blog/screens/login/login_page.dart';
 import 'package:blog/screens/create/create_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:blog/services/postCURD.dart';
+
+import '../MyAppBar.dart';
+
 import 'package:blog/screens/posts/edit.post.dart';
 class PostManage extends StatefulWidget {
   @override
@@ -33,58 +38,9 @@ class _HomeState extends State<PostManage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            backgroundColor: Colors.pink,
-            title: Text("Home"),
-            elevation: 0.0,
-            actions: [
-              Padding(
-                  padding: EdgeInsets.all(8.0),
-                  // ignore: deprecated_member_use
-                  child: FlatButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()));
-                      },
-                      child: Text("Login"))),
-              Padding(
-                  padding: EdgeInsets.all(8.0),
-                  // ignore: deprecated_member_use
-                  child: FlatButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateBlog()));
-                      },
-                      child: Text("Create posts"))),
-              Padding(
-                  padding: EdgeInsets.all(8.0),
-                  // ignore: deprecated_member_use
-                  child:
-                      // ignore: deprecated_member_use
-                      FlatButton(onPressed: () {}, child: Text("Edit posts"))),
-              Padding(
-                  padding: EdgeInsets.all(8.0),
-                  // ignore: deprecated_member_use
-                  child:
-                      // ignore: deprecated_member_use
-                      FlatButton(onPressed: () {}, child: Text("Delete post"))),
-            ]),
-        drawer: Drawer(
-            child: Scaffold(
-                appBar: AppBar(
-                    elevation: 0.0,
-                    title: Text("My blog"),
-                    backgroundColor: Colors.pink),
-                body: Column(children: <Widget>[
-                  ListTile(title: Text("Dashboard")),
-                  ListTile(title: Text("Manage users")),
-                  ListTile(title: Text("Manage posts")),
-                  ListTile(title: Text("Log out")),
-                ]))),
+        appBar: MyAppBar.getAppBar(context),
+        drawer: MyDrawer.getDrawer(context),
+        
         body: Container(
           padding: EdgeInsets.only(left: 400, right: 400,top:20),
           child: Column(children:[

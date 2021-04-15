@@ -204,8 +204,7 @@ class RegisterForm extends StatelessWidget {
                         textColor: Colors.white,
                         fontSize: 16.0);
                     if (data["status"] == 200) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => LoginPage()));
+                      Navigator.pop(context);
                     }
                   },
                   child: Text('REGISTER',
