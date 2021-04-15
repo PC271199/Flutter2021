@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:html';
 import 'package:http/http.dart' as http;
-import 'package:mongo_dart/mongo_dart.dart';
 import 'package:blog/utils/headerData.dart';
 
 String url = 'https://ancient-cliffs-67475.herokuapp.com/api/v1/posts';
+// String url = 'http://localhost/api/v1/posts';
+
 class CrudMethods {
   Future<dynamic> createPost(blogData) async {
     try {
@@ -66,6 +68,18 @@ class CrudMethods {
 
       var response = await http
           .get(Uri.tryParse('$url/blogger'), headers: {"Accept": "application/json" ,'Authorization': 'Bearer $token'});
+      var result = jsonDecode(response.body);
+      return result;
+    } catch (e) {}
+  }
+
+  Future<dynamic> postComment(postId, content) async {
+    try {
+      Map<String, dynamic> data = {"content": content};
+      var token = await HeaderData.getToken();
+
+      var response = await http
+          .patch(Uri.tryParse('$url/$postId/comment'), body : data , headers: {"Accept": "application/json" ,'Authorization': 'Bearer $token'});
       var result = jsonDecode(response.body);
       return result;
     } catch (e) {}
