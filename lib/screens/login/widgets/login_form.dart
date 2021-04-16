@@ -6,7 +6,7 @@ import 'package:blog/utils/headerData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../../home.dart';
+import '../../home/home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginForm extends StatelessWidget {
@@ -61,6 +61,7 @@ class LoginForm extends StatelessWidget {
                           color: Colors.white))),
               TextFormField(
                   controller: _emailController,
+                  // ignore: missing_return
                   validator: (value) {
                     if (value.isEmpty) {
                       return 'Please enter email!';
@@ -99,6 +100,7 @@ class LoginForm extends StatelessWidget {
                           color: Colors.white))),
               TextFormField(
                   controller: _passwordController,
+                  // ignore: missing_return
                   validator: (value) {
                     if (value.isEmpty) {
                       return 'Please Enter password!';
@@ -129,6 +131,7 @@ class LoginForm extends StatelessWidget {
                   style: TextStyle(
                       color: Colors.white, fontSize: fontSizeTextFormField)),
               SizedBox(height: heightSize * spaceBetweenFieldAndButton),
+              // ignore: deprecated_member_use
               FlatButton(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5)),
@@ -156,8 +159,8 @@ class LoginForm extends StatelessWidget {
                     if (data["status"] == 200) {
                       await HeaderData.setToken(data["token"]);
                       await HeaderData.setRole(data["role"]);
-                      print(await HeaderData.getToken());
-                      Navigator.pop(context);
+                      Navigator.pushNamed(context, "/");
+                      
                     }
                   },
                   child: Text('LOGIN',

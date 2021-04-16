@@ -1,10 +1,9 @@
-
-import 'package:blog/screens/MyDrawer.dart';
+import 'package:blog/screens/common/MyDrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:blog/services/postCURD.dart';
-
-import 'MyAppBar.dart';
+import 'package:blog/utils/headerData.dart';
+import '../common/MyAppBar.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -14,6 +13,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<dynamic> posts = [];
   String comment;
+  int role;
   final PublishSubject subject = PublishSubject<String>();
   CrudMethods crudMethods = new CrudMethods();
 
@@ -26,6 +26,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    getRole();
     getPosts();
   }
 
@@ -33,7 +34,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: MyAppBar.getAppBar(context),
-        drawer: MyDrawer.getDrawer(context),
+        drawer: MyDrawer.getDrawer(context, role),
         body: SingleChildScrollView(
             padding: EdgeInsets.only(top: 50),
             child: Column(
@@ -115,6 +116,7 @@ class _HomeState extends State<Home> {
                                                   child: Icon(Icons.favorite,
                                                       color: Colors.pink)),
                                               Text(posts[index]["likes"]
+                                                  .length
                                                   .toString())
                                             ])),
                                         Container(
@@ -138,41 +140,47 @@ class _HomeState extends State<Home> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold))),
-                                                    Text(posts[index]["comments"]
-                                                        [i]["content"])
+                                                    Text(posts[index]
+                                                            ["comments"][i]
+                                                        ["content"])
                                                   ]);
                                                 })),
-                                                Container(
-                              margin: EdgeInsets.symmetric(horizontal: 16),
-                              child: Column(
-                                children: <Widget>[
-                                  TextField(
-                                    decoration:
-                                        InputDecoration(hintText: "Title"),
-                                    onChanged: (val) {
-                                      comment = val;
-                                    },
-                                  ),
-                                  TextButton(
-                                    style: ButtonStyle(
-                                      foregroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Colors.blue),
-                                    ),
-                                    onPressed: () {
-                                      crudMethods.postComment(
-                                          posts[index]["_id"], comment);
-                                      getPosts();
-                                      Navigator.pushReplacement(
-                                      context,
-                                      // rerender page
-                                      MaterialPageRoute(builder: (BuildContext context) => super.widget));
-                                    },
-                                    child: Text('Send'),
-                                  )
-                                ],
-                              ),
-                            )
+                                        Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          child: Column(
+                                            children: <Widget>[
+                                              TextField(
+                                                decoration: InputDecoration(
+                                                    hintText: "Comment"),
+                                                onChanged: (val) {
+                                                  comment = val;
+                                                },
+                                              ),
+                                              TextButton(
+                                                style: ButtonStyle(
+                                                  foregroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(Colors.blue),
+                                                ),
+                                                onPressed: () {
+                                                  crudMethods.postComment(
+                                                      posts[index]["_id"],
+                                                      comment);
+                                                  getPosts();
+                                                  Navigator.pushReplacement(
+                                                      context,
+                                                      // rerender page
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              super.widget));
+                                                },
+                                                child: Text('Send'),
+                                              )
+                                            ],
+                                          ),
+                                        )
                                       ]))));
                         }))
               ],
@@ -186,7 +194,13 @@ class _HomeState extends State<Home> {
       setState(() {
         posts = postData;
       });
-      
     } catch (e) {}
+  }
+
+  void getRole() async {
+    var currentRole = await HeaderData.getRole();
+    setState(() {
+      role = currentRole;
+    });
   }
 }
