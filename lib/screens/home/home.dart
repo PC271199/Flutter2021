@@ -15,6 +15,8 @@ class _HomeState extends State<Home> {
   List<dynamic> posts = [];
   String comment;
   int role;
+  String userId;
+  Color color;
   final PublishSubject subject = PublishSubject<String>();
   CrudMethods crudMethods = new CrudMethods();
   String userName;
@@ -27,7 +29,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    getRole();
+    getRoleAndUserId();
     getPosts();
   }
 
@@ -116,9 +118,28 @@ class _HomeState extends State<Home> {
                                             color: Colors.black38,
                                             child: Row(children: <Widget>[
                                               Container(
-                                                  padding: EdgeInsets.all(10),
-                                                  child: Icon(Icons.favorite,
-                                                      color: Colors.pink)),
+                                                padding: EdgeInsets.all(10),
+                                                child: TextButton(
+                                                    onPressed: () {
+                                                      this.setState(() {
+                                                        color = 
+                                                        this.checkLike(
+                                                                posts[index]
+                                                                    ["likes"])
+                                                            ? Colors.pink
+                                                            : Color(0xFFFFFFFF);
+                                                      });
+                                                      crudMethods.likePost(
+                                                          posts[index]["_id"]);
+                                                    },
+                                                    child: Icon(Icons.favorite,
+                                                        color: this.checkLike(
+                                                                posts[index]
+                                                                    ["likes"])
+                                                            ? Colors.pink
+                                                            : Color(
+                                                                0xFFFFFFFF))),
+                                              ),
                                               Text(posts[index]["likes"]
                                                   .length
                                                   .toString())
@@ -201,10 +222,21 @@ class _HomeState extends State<Home> {
     } catch (e) {}
   }
 
-  void getRole() async {
+  void getRoleAndUserId() async {
     var currentRole = await HeaderData.getRole();
+    String id = await HeaderData.getUserId();
     setState(() {
       role = currentRole;
+      userId = id;
     });
+  }
+
+  bool checkLike(likes) {
+    for (var i = 0; i < likes.length; i++) {
+      if (likes[i]["userId"] == this.userId) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -21,6 +21,7 @@ class PostManage extends StatefulWidget {
 
 class _HomeState extends State<PostManage> {
   List<dynamic> posts = [];
+  String userId;
   final PublishSubject subject = PublishSubject<String>();
 
   CrudMethods crudMethods = new CrudMethods();
@@ -34,6 +35,7 @@ class _HomeState extends State<PostManage> {
   @override
   void initState() {
     super.initState();
+
     getPosts();
   }
 
@@ -130,6 +132,8 @@ class _HomeState extends State<PostManage> {
       print(posts);
     } catch (e) {}
   }
+
+
 
   void deletePost(postId) async {
     try {
