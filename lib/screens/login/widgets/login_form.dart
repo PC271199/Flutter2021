@@ -147,7 +147,6 @@ class LoginForm extends StatelessWidget {
                           "password": _passwordController.text
                         }));
                     var data = jsonDecode(response.body);
-                    print(data);
                     Fluttertoast.showToast(
                         msg: data["msg"],
                         toastLength: Toast.LENGTH_SHORT,
@@ -159,8 +158,8 @@ class LoginForm extends StatelessWidget {
                     if (data["status"] == 200) {
                       await HeaderData.setToken(data["token"]);
                       await HeaderData.setRole(data["role"]);
+                      await HeaderData.setUserId(data["userId"]);
                       Navigator.pushNamed(context, "/");
-                      
                     }
                   },
                   child: Text('LOGIN',

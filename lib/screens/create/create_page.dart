@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:blog/screens/home.dart';
+import 'package:blog/screens/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:blog/services/postCURD.dart';
 import 'package:fluttertoast/fluttertoast.dart';

@@ -1,13 +1,8 @@
-import 'dart:html';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HeaderData {
-  // static final HeaderData _instance = HeaderData._internal();
-  // factory HeaderData() {
-  //   return _instance;
-  // }
-  // HeaderData._internal();
+
   static SharedPreferences prefs;
   static Future<bool> setToken(String value) async {
     prefs = await SharedPreferences.getInstance();
@@ -27,5 +22,15 @@ class HeaderData {
   static Future<int> getRole() async {
     prefs = await SharedPreferences.getInstance();
     return prefs.get("role");
+  }
+
+  static Future<bool> setUserId(String value) async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.setString("userId", value);
+  }
+
+  static Future<String> getUserId() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.get("userId");
   }
 }
