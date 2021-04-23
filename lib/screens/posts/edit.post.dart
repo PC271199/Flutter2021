@@ -1,21 +1,23 @@
 import 'dart:io';
 import 'package:blog/screens/home/home.dart';
+
+import 'package:blog/utils/headerData.dart';
 import 'package:flutter/material.dart';
 import 'package:blog/services/postCURD.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 // ignore: must_be_immutable
 class EditPost extends StatefulWidget {
-  String postId;
+  dynamic post;
   @override
-  EditPost(this.postId);
-  _EditPostState createState() => _EditPostState(this.postId);
+  EditPost(this.post);
+  _EditPostState createState() => _EditPostState(this.post);
 }
 
 class _EditPostState extends State<EditPost> {
-  String authorName, title, content, postId;
+  String authorName;
   dynamic post = {};
-  _EditPostState(this.postId);
+  _EditPostState(this.post);
 
   File selectedImage;
   bool _isLoading = false;
@@ -25,13 +27,15 @@ class _EditPostState extends State<EditPost> {
   @override
   void initState() {
     super.initState();
-    getPost();
   }
 
   upadtePost() async {
-    Map<String, String> blogMap = {"title": title, "content": content};
-    var result = await crudMethods.updatePost(postId, blogMap);
-
+    print(post);
+    Map<String, String> blogMap = {
+      "title": post["title"],
+      "content": post["content"]
+    };
+    var result = await crudMethods.updatePost(post["_id"], blogMap);
     Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
     Fluttertoast.showToast(
         msg: result["msg"],
@@ -45,6 +49,8 @@ class _EditPostState extends State<EditPost> {
 
   @override
   Widget build(BuildContext context) {
+    print("check");
+    print(post["title"]);
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -118,10 +124,13 @@ class _EditPostState extends State<EditPost> {
                     margin: EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       children: <Widget>[
-                        TextField(
-                          decoration: InputDecoration(hintText: "Title"),
+                        TextFormField(
+                          minLines: 2,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          initialValue: post["title"],
                           onChanged: (val) {
-                            title = val;
+                            post["title"] = val;
                           },
                         ),
                         TextFormField(
@@ -131,7 +140,7 @@ class _EditPostState extends State<EditPost> {
                           initialValue: post["content"],
                           // decoration: InputDecoration(hintText: "Content"),
                           onChanged: (val) {
-                            content = val;
+                            post["content"] = val;
                           },
                         )
                       ],
@@ -141,16 +150,5 @@ class _EditPostState extends State<EditPost> {
               ),
             ),
     );
-  }
-
-  void getPost() async {
-    try {
-      var result = await crudMethods.getPost(postId);
-      var postData = result["post"];
-      setState(() {
-        post = postData;
-      });
-      print(post);
-    } catch (e) {}
   }
 }

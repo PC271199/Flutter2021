@@ -1,8 +1,11 @@
 import "package:flutter/material.dart";
 
-
 class MyAppBar {
-  static getAppBar(BuildContext context) {
+  static String userName;
+  static getAppBar(BuildContext context, String userNameIn) {
+    if (userName == null) {
+      userName = userNameIn;
+    }
     return AppBar(
         backgroundColor: Colors.pink,
         title: InkWell(
@@ -11,13 +14,15 @@ class MyAppBar {
         elevation: 0.0,
         actions: [
           Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(20),
               // ignore: deprecated_member_use
-              child: FlatButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/login");
-                  },
-                  child: Text("Login"))),
+              child: userName != null
+                  ? new Text("Welcome, " + userName + "!")
+                  : FlatButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/login");
+                      },
+                      child: Text("Login"))),
         ]);
   }
 }

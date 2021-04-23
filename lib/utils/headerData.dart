@@ -33,4 +33,14 @@ class HeaderData {
     prefs = await SharedPreferences.getInstance();
     return prefs.get("userId");
   }
+
+  static Future<bool> setUserName(String userName) async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.setString("userName", userName);
+  }
+
+  static Future<String> getUserName() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getString("userName");
+  }
 }

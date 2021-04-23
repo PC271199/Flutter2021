@@ -42,7 +42,7 @@ class _HomeState extends State<PostManage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: MyAppBar.getAppBar(context),
+        appBar: MyAppBar.getAppBar(context, ""),
         drawer: MyDrawer.getDrawer(context, 2),
         body: Container(
             padding: EdgeInsets.only(left: 400, right: 400, top: 20),
@@ -100,7 +100,7 @@ class _HomeState extends State<PostManage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        EditPost(posts[index]["_id"])));
+                                        EditPost(posts[index])));
                           },
                           child: Text('Edit', style: TextStyle(fontSize: 20)),
                         ))),

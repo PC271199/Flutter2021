@@ -2,8 +2,10 @@ import 'package:blog/screens/create/create_page.dart';
 import 'package:blog/screens/login/login_page.dart';
 import 'package:blog/screens/posts/post.blogger.dart';
 import 'package:blog/screens/register/register_page.dart';
+import 'package:blog/utils/headerData.dart';
 import 'package:flutter/material.dart';
 import 'package:blog/screens/home/home.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
