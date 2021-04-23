@@ -6,6 +6,7 @@ import 'package:blog/utils/headerData.dart';
 import '../common/MyAppBar.dart';
 
 class Home extends StatefulWidget {
+  Home();
   @override
   _HomeState createState() => _HomeState();
 }
@@ -16,7 +17,7 @@ class _HomeState extends State<Home> {
   int role;
   final PublishSubject subject = PublishSubject<String>();
   CrudMethods crudMethods = new CrudMethods();
-
+  String userName;
   @override
   void dispose() {
     subject.close();
@@ -32,8 +33,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    HeaderData.getUserName().then((value) {
+      userName = value;
+    });
     return Scaffold(
-        appBar: MyAppBar.getAppBar(context),
+        appBar: MyAppBar.getAppBar(context, userName),
         drawer: MyDrawer.getDrawer(context, role),
         body: SingleChildScrollView(
             padding: EdgeInsets.only(top: 50),

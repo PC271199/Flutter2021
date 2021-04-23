@@ -28,4 +28,24 @@ class HeaderData {
     prefs = await SharedPreferences.getInstance();
     return prefs.get("role");
   }
+
+  static Future<String> setId(String id) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString("_id", id);
+  }
+
+  static Future<String> getId() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getString("_id");
+  }
+
+  static Future<String> setUserName(String userName) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString("userName", userName);
+  }
+
+  static Future<String> getUserName() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getString("userName");
+  }
 }

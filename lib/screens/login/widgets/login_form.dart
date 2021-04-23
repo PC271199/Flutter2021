@@ -1,12 +1,12 @@
 import 'dart:convert';
 
+import 'package:blog/screens/home/home.dart';
 import 'package:blog/screens/register/register_page.dart';
 import 'package:blog/utils/alert.dart';
 import 'package:blog/utils/headerData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../../home/home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginForm extends StatelessWidget {
@@ -159,8 +159,8 @@ class LoginForm extends StatelessWidget {
                     if (data["status"] == 200) {
                       await HeaderData.setToken(data["token"]);
                       await HeaderData.setRole(data["role"]);
-                      Navigator.pushNamed(context, "/");
-                      
+                      await HeaderData.setUserName(data["fullName"]);
+                      Navigator.pushNamed(context, "/", arguments: Home());
                     }
                   },
                   child: Text('LOGIN',
