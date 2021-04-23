@@ -159,8 +159,8 @@ class LoginForm extends StatelessWidget {
                       await HeaderData.setToken(data["token"]);
                       await HeaderData.setRole(data["role"]);
                       await HeaderData.setUserId(data["userId"]);
+                      await HeaderData.setUserName(data["fullName"]);
                       Navigator.pushNamed(context, "/");
-
                     }
                   },
                   child: Text('LOGIN',

@@ -1,5 +1,7 @@
 import 'package:blog/screens/common/MyDrawer.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:blog/services/postCURD.dart';
 import 'package:blog/utils/headerData.dart';
@@ -15,7 +17,7 @@ class _HomeState extends State<Home> {
   List<dynamic> posts = [];
   String comment;
   int role;
-  String userId;
+  String userId, token;
   Color color;
   final PublishSubject subject = PublishSubject<String>();
   CrudMethods crudMethods = new CrudMethods();
@@ -121,13 +123,40 @@ class _HomeState extends State<Home> {
                                                 padding: EdgeInsets.all(10),
                                                 child: TextButton(
                                                     onPressed: () {
-                                                      this.setState(() {
-                                                        color = 
-                                                        this.checkLike(
-                                                                posts[index]
-                                                                    ["likes"])
-                                                            ? Colors.pink
-                                                            : Color(0xFFFFFFFF);
+                                                      setState(() {
+                                                        if (this.token !=
+                                                            null) {
+                                                          this.checkLike(
+                                                                  posts[index]
+                                                                      ["likes"])
+                                                              ? this.deleteLike(
+                                                                  posts[index]
+                                                                      ["likes"],
+                                                                  userId)
+                                                              : this
+                                                                  .posts[index]
+                                                                      ["likes"]
+                                                                  .add({
+                                                                  "userId":
+                                                                      userId
+                                                                });
+                                                        } else {
+                                                          Fluttertoast.showToast(
+                                                              msg:
+                                                                  "Please login to like post!",
+                                                              toastLength: Toast
+                                                                  .LENGTH_SHORT,
+                                                              gravity:
+                                                                  ToastGravity
+                                                                      .CENTER,
+                                                              timeInSecForIosWeb:
+                                                                  2,
+                                                              backgroundColor:
+                                                                  Colors.red,
+                                                              textColor:
+                                                                  Colors.white,
+                                                              fontSize: 16.0);
+                                                        }
                                                       });
                                                       crudMethods.likePost(
                                                           posts[index]["_id"]);
@@ -225,9 +254,11 @@ class _HomeState extends State<Home> {
   void getRoleAndUserId() async {
     var currentRole = await HeaderData.getRole();
     String id = await HeaderData.getUserId();
+    String tk = await HeaderData.getToken();
     setState(() {
       role = currentRole;
       userId = id;
+      token = tk;
     });
   }
 
@@ -238,5 +269,14 @@ class _HomeState extends State<Home> {
       }
     }
     return false;
+  }
+
+  bool deleteLike(likes, userId) {
+    for (var i = 0; i < likes.length; i++) {
+      if (likes[i]["userId"] == userId) {
+        likes.removeAt(i);
+        return true;
+      }
+    }
   }
 }
